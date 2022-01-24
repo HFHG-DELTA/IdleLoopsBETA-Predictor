@@ -490,7 +490,7 @@ const Koviko = {
          * @return {number} Combat skill of the team leader
          * @memberof Koviko.Predictor#helpers
          */
-        getSelfCombat: (r, k) => (g.getSkillLevelFromExp(k.combat) + g.getSkillLevelFromExp(k.pyromancy) * 5) * (1 + ((r.armor || 0) * h.getGuildRankBonus(r.crafts || 0)) / 5),
+        getSelfCombat: (r, k) => ((g.getSkillLevelFromExp(k.combat) + g.getSkillLevelFromExp(k.pyromancy) * 5 + g.getSkillLevelFromExp(k.restoration) * 2)) * (1 + ((r.armor || 0) * h.getGuildRankBonus(r.crafts || 0)) / 5),
 
         /**
          * Calculate the combat skill of the entire team
@@ -522,7 +522,7 @@ const Koviko = {
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
         'Buy Glasses': { affected: ['gold'], effect: (r) => (r.gold -= 10, r.glasses = true) },
-        'Buy Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
         'Short Quest': { affected: ['gold'], effect: (r) => {
@@ -579,7 +579,7 @@ const Koviko = {
           r.rep--;
         }},
         'Get Drunk': { affected: ['rep'], canStart: (input) => (input.rep >= -3), effect: (r) => r.rep-- },
-        'Purchase Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Mana Z3': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Sell Potions': { affected: ['gold', 'potions'], effect: (r, k) => (r.gold += r.potions * g.getSkillLevelFromExp(k.alchemy), r.potions = 0) },
         'Read Books': {},
         'Gather Team': { affected: ['gold'], effect: (r) => (r.team = (r.team || 0) + 1, r.gold -= r.team * 100) },
@@ -617,7 +617,43 @@ const Koviko = {
         'Face Judgement': { effect: (r) => r.town += 1 },
 
         // Town 5
-	'Fall From Grace': {},
+	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Guided Tour': { affected: ['gold'], effect: (r) => (r.gold -= 10) },
+        'Seek Citizenship': {},
+        'Canvass': {},
+        'Donate': { affected: ['gold', 'rep'], canStart: (input) => (input.gold >= 20), effect: (r) => {
+          r.gold -= 20;
+          r.rep += 1;
+        }},
+        'Accept Donations': {affected: ['gold', 'rep'], canStart: (input) => (input.rep >= 1), effect: (r) => {
+          r.rep -= 1;
+          r.gold += 20;
+        }},
+        'Sell Artifact': { affected: ['artifacts','gold'], canStart: (input) => (input.artifacts >= 1), effect: (r) => {
+         r.artifacts -= 1;
+         r.gold += 50;
+        }},
+        'Gift Artifact': { affected: ['artifacts','favors'], canStart: (input) => (input.artifacts >= 1), effect: (r) => {
+         r.artifacts -= 1;
+         r.favors += 1;
+        }},
+        'Mercantilism': { effect: (r, k) => k.mercantilism += 100 },
+        'Charm School': {},
+        'Oracle': {},
+        'Winged Steed': { affected: ['gold','favors'], canStart: (input) => (input.favors >= 10, input.gold >= 100), effect: (r) => {
+         r.favors -= 10;
+         r.gold -= 100;
+        }},
+        'Great Feast': {},
+        'Collect Taxes': {},
+        'Acquire Permit': {},
+        'Purchase Land': { affected: ['gold'], canStart: (input) => (input.gold >= 50), effect: (r) => {
+         r.gold -= 50;}
+        },
+        'Build Housing': {},
+        'Restoration': { effect: (r, k) => k.restoration += 100 },
+        'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
+        'Fall From Grace': {},
 
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
@@ -644,6 +680,11 @@ const Koviko = {
           cost: (p, a) => segment => g.precision3(Math.pow(2, Math.floor((p.completed + segment) / a.segments+.0000001)) * 1e6),
           tick: (p, a, s, k, r) => offset => (h.getSelfCombat(r, k) * Math.sqrt(1 + p.total/100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]])/100)),
           effect: { loop: (r, k) => (r.blood++, k.combat += 1000) }
+        }},
+	'Tidy Up': { affected: ['gold'], loop: {
+          cost: (p, a) => segment => g.fibonacci(Math.floor((p.completed + segment) - p.completed / 3 + .0000001)) * 1000000,
+          tick: (p, a, s, k) => offset => g.getSkillLevelFromExp(k.practical) * Math.sqrt(1 + p.total / 100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100),
+          effect: { loop: (r) => (r.gold += 50)}
         }},
 
         // Loops with Max
@@ -686,6 +727,14 @@ const Koviko = {
             return attempt < 1 ? (g.getSkillLevelFromExp(k.magic) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100)) : 0;
           },
           effect: { loop: (r) => r.mind++ },
+        }},
+        'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
+          canStart: (input) => (input.gold >= 500, input.favors >=10),
+          effect: (input) => (input.gold -=500, input.favors -=10),
+          loop: {
+            cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
+            tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
+          effect: { segment: (r) => (r.wizrank++) }
         }},
       };
 
