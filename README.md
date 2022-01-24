@@ -1,4 +1,4 @@
-# IdleLoops Predictor
+# IdleLoops Omsi6 BETA Predictor
 
 The IdleLoops Predictor is a userscript addon that modifies the action list UI of [IdleLoops](http://stopsign.github.io/idleLoops/). The modifications will show you the estimated amount of mana, gold, reputation, herbs, hide, potions, soulstone attempts, crafting guild segments, and adventure guild segments after every action in the action list based on your current talents and progress.
 
