@@ -4,7 +4,7 @@
 // @version      1.1
 // @description  Predicts the amount of resources spent and gained by each action in the action list. Valid as of IdleLoops v.94/Omsi6. Approaching valid as of BETA 01-22-2022
 // @author       Koviko <koviko.net@gmail.com>
-// @match        https://omsi6.github.io/loops/
+// @match        https://raw.githack.com/omsi6/omsi6.github.io/beta/loops/index.html
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-idle
