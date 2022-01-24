@@ -691,7 +691,7 @@ const Koviko = {
 	      segment: (r) => (r.wizrank++),
 	      end: (r, k, ps) => (
 	        ps['Restoration'].action.manaCost = () => 30000 / precision3(1 + r.wizrank / 20 + Math.pow(r.wizrank, 2) / 300),
-		ps['Restoration'].action.manaCost = () => 30000 / precision3(1 + r.wizrank / 20 + Math.pow(r.wizrank, 2) / 300)
+		ps['Spatiomancy'].action.manaCost = () => 30000 / precision3(1 + r.wizrank / 20 + Math.pow(r.wizrank, 2) / 300)
 	      )
             }
           }
