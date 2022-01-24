@@ -909,7 +909,11 @@ const Koviko = {
       while(ms.toString().length < percisionForTime) { ms = "0" + ms; }
 
       let totalTime = ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2) + "." + ms;
-      container && (this.totalDisplay.innerHTML = intToString(total) + " | " + totalTime);
+      let dungeonEquilibrium = Math.sqrt(total / 200000);
+      let dungeonSoulStones = snapshots.currProgress.attributes["Small Dungeon"].value + snapshots.currProgress.attributes["Large Dungeon"].value * 10;
+      let expectedSoulStones = dungeonEquilibrium * dungeonSoulStones + this.predictions["Mine Soulstones"].loopsCompleted;
+      let soulStonesPerMinute = expectedSoulStones / totalTicks * 60;
+      container && (this.totalDisplay.innerHTML = intToString(total) + " | x" + gameSpeed + " | " + totalTime + " | " + soulStonesPerMinute.toFixed(2) + " SS/min");
 
       // Log useful debugging data
       if (isDebug) {
