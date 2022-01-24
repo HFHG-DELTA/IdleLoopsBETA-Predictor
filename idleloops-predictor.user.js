@@ -390,6 +390,8 @@ const Koviko = {
       ul.koviko .ritual{color:#ff1493;width:0px;}
       ul.koviko .artifacts{color:#ffd700;width:0px;}
       ul.koviko .mind{color:#006400;width:0px;}
+      ul.koviko .favors{color:#6392fe;width:0px;}
+      ul.koviko .wizrank{color:#7303bb;width:0px;}
       .actionOptions .showthis {width:max-content;bottom:100%;max-width:400px;margin-bottom:5px;}
       .travelContainer, .actionContainer {position:relative;}
       \`;
