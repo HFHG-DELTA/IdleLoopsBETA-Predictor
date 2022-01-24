@@ -669,6 +669,11 @@ const Koviko = {
           tick: (p, a, s, k, r) => offset => (h.getSelfCombat(r, k) * Math.sqrt(1 + p.total/100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]])/100)),
           effect: { loop: (r, k) => (r.blood++, k.combat += 1000) }
         }},
+	'Tidy Up': { affected: ['gold'], loop: {
+          cost: (p, a) => segment => g.fibonacci(Math.floor((p.completed + segment) - p.completed / 3 + .0000001)) * 1000000,
+          tick: (p, a, s, k) => offset => g.getSkillLevelFromExp(k.practical) * Math.sqrt(1 + p.total / 100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100),
+          effect: { loop: (r) => (r.gold += 50)}
+        }},
 
         // Loops with Max
         'Small Dungeon': { affected: ['soul'], canStart: (input) => input.rep >= 2, loop: {
