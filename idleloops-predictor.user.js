@@ -508,7 +508,7 @@ const Koviko = {
           r.temp2 = (r.temp2 || 0) + 1;
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
-        'Buy Glasses': { effect: (r) => (r.gold -= 10, r.glasses = true) },
+        'Buy Glasses': { affected: ['gold'],  effect: (r) => (r.gold -= 10, r.glasses = true) },
         'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
@@ -724,7 +724,8 @@ const Koviko = {
             cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
             tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
           effect: { segment: (r) => (r.wizrank++) }
-      }},
+       }},
+      };
 
       /**
        * Prediction collection
