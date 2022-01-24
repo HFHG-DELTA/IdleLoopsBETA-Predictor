@@ -520,7 +520,7 @@ const Koviko = {
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
         'Buy Glasses': { affected: ['gold'], effect: (r) => (r.gold -= 10, r.glasses = true) },
-        'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
+        'Buy Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
         'Short Quest': { affected: ['gold'], effect: (r) => {
@@ -577,7 +577,7 @@ const Koviko = {
           r.rep--;
         }},
         'Get Drunk': { affected: ['rep'], canStart: (input) => (input.rep >= -3), effect: (r) => r.rep-- },
-        'Buy Mana Z3': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
+        'Purchase Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Sell Potions': { affected: ['gold', 'potions'], effect: (r, k) => (r.gold += r.potions * g.getSkillLevelFromExp(k.alchemy), r.potions = 0) },
         'Read Books': {},
         'Gather Team': { affected: ['gold'], effect: (r) => (r.team = (r.team || 0) + 1, r.gold -= r.team * 100) },
@@ -614,14 +614,8 @@ const Koviko = {
         }},
         'Face Judgement': { effect: (r) => r.town += 1 },
 
-        // Valhalla
-        'Guided Tour': { affected: ['gold'], canStart: (input) => (input.gold >= 10), effect: (r) => (r.gold -= 10) },
-        'Canvass': {},
-        'Sell Artifact': { affected: ['artifacts', 'gold'], canStart: (input) => (input.artifacts >= 1), effect: (r) => (r.artifacts -= 1, r.gold += 50) },
-        'Charm School': {},
-        'Oracle': {},
-        'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
-        'Fall From Grace': {},
+        // Town 5
+	'Fall From Grace': {},
 
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
@@ -801,9 +795,7 @@ const Koviko = {
           }
 
           // Predict each loop in sequence
-          let repeatLoop = options.repeatLastAction && i == actions.length - 1;
-          let loop = 0;
-          for (loop = 0; repeatLoop ? isValid : loop < listedAction.loops; loop++) {
+          for (let loop = 0; loop < listedAction.loops; loop++) {
             let canStart = typeof(prediction.canStart) === "function" ? prediction.canStart(state.resources) : prediction.canStart;
             if (!canStart) { isValid = false; }
             if ( !canStart || listedAction.disabled ) { break; }
@@ -867,18 +859,7 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
-            let e = div.removeChild(div.lastElementChild);
-
-            if ( repeatLoop ) {
-              let t = div.lastElementChild;
-              t.innerHTML += \` <div><ul class="koviko"><li style='color:#bbbbbb;'>\${loop}</li></ul></div>\`
-            }
-
-            let n = document.createElement('div');
-            n.style = 'display:flex;'
-            n.innerHTML = e.outerHTML;
-            n.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
-            div.appendChild(n)
+            div.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
           }
           affected.forEach(x => state.maxResources[x] = Math.sign(state.maxResources[x] + state.resources[x]) * Math.max(Math.abs(state.resources[x]), Math.abs(state.maxResources[x])));
         }
