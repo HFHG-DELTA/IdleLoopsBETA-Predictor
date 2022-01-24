@@ -363,35 +363,37 @@ const Koviko = {
 
       // Build the CSS
       let css = \`
-      .nextActionContainer{width:auto!important;padding:0 4px}
+      .nextActionContainer{width:auto!important;padding:1px 4px}
       #nextActionsList{height:100%!important; overflow-y:scroll;}
-      #curActionsListContainer{width:24%!important; z-index: 100;}
+      #expandableList{display:flex;}
+      #curActionsListContainer{width:116px; z-index: 100;}
+      #nextActionsListContainer{flex-grow:1;}
       #nextActionsList:hover{margin-left:-40%;padding-left:40%}
       #actionList>div:nth-child(2){left: 53px !important}
       .nextActionContainer:nth-child(1n+9) .showthis {bottom: 5px; top: unset;}
       span.koviko{font-weight:bold;color:#8293ff}
       div.koviko{top:-5px;left:auto;right:100%}
-      ul.koviko{list-style:none;margin:0;padding:0;pointer-events:none;display:inline;}
-      ul.koviko li{display:inline-block;margin: 0 2px;font-weight:bold;font-size:90%}
+      ul.koviko{list-style:none;margin:0;padding:0;pointer-events:none;display:inline-block;}
+      ul.koviko li{display:inline-block;margin: 0 2px;font-weight:bold;font-size:90%;text-align:right;}
       ul.koviko.invalid li{color:#c00!important}
-      ul.koviko .mana{color:#8293ff}
-      ul.koviko .gold{color:#d09249}
-      ul.koviko .rep{color:#b06f37}
-      ul.koviko .soul{color:#9d67cd}
-      ul.koviko .herbs{color:#4caf50}
-      ul.koviko .hide{color:#663300}
-      ul.koviko .potions{color:#00b2ee}
-      ul.koviko .lpoitons{color:#436ef7}
-      ul.koviko .blood{color:#8b0000}
-      ul.koviko .crafts{color:#777777}
-      ul.koviko .adventures{color:#191919}
-      ul.koviko .ritual{color:#ff1493}
-      ul.koviko .artifacts{color:#ffd700}
-      ul.koviko .mind{color:#006400}
+      ul.koviko .mana{color:#8293ff;width:0px;}
+      ul.koviko .gold{color:#d09249;width:0px;}
+      ul.koviko .rep{color:#b06f37;width:0px;}
+      ul.koviko .soul{color:#9d67cd;width:0px;}
+      ul.koviko .herbs{color:#4caf50;width:0px;}
+      ul.koviko .hide{color:#663300;width:0px;}
+      ul.koviko .potions{color:#00b2ee;width:0px;}
+      ul.koviko .lpoitons{color:#436ef7;width:0px;}
+      ul.koviko .blood{color:#8b0000;width:0px;}
+      ul.koviko .crafts{color:#777777;width:0px;}
+      ul.koviko .adventures{color:#191919;width:0px;}
+      ul.koviko .ritual{color:#ff1493;width:0px;}
+      ul.koviko .artifacts{color:#ffd700;width:0px;}
+      ul.koviko .mind{color:#006400;width:0px;}
       .actionOptions .showthis {width:max-content;bottom:100%;max-width:400px;margin-bottom:5px;}
       .travelContainer, .actionContainer {position:relative;}
       \`;
-      document.getElementById("actionsColumn").style.width="500px";
+      document.getElementById("actionsColumn").style.width="550px";
 
       // Create the <style> element if it doesn't already exist
       if (!style || style.tagName.toLowerCase() !== 'style') {
@@ -404,6 +406,17 @@ const Koviko = {
       // Clean out the <style> element and append the correct CSS
       for (; style.lastChild; style.removeChild(style.lastChild));
       style.appendChild(document.createTextNode(css));
+
+      let wstyle = document.getElementById('wstyle');
+
+      if (!wstyle || wstyle.tagName.toLowerCase() !== 'style') {
+        wstyle = document.createElement('style');
+        wstyle.type = 'text/css'
+        wstyle.id = 'wstyle'
+        document.head.appendChild(wstyle)
+      }
+      
+      for (; wstyle.lastChild; wstyle.removeChild(wstyle.lastChild));
     }
 
     /**
@@ -506,8 +519,8 @@ const Koviko = {
           r.temp2 = (r.temp2 || 0) + 1;
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
-        'Buy Glasses': { effect: (r) => (r.gold -= 10, r.glasses = true) },
-        'Buy Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Glasses': { affected: ['gold'], effect: (r) => (r.gold -= 10, r.glasses = true) },
+        'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
         'Short Quest': { affected: ['gold'], effect: (r) => {
@@ -564,7 +577,7 @@ const Koviko = {
           r.rep--;
         }},
         'Get Drunk': { affected: ['rep'], canStart: (input) => (input.rep >= -3), effect: (r) => r.rep-- },
-        'Purchase Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Mana Z3': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Sell Potions': { affected: ['gold', 'potions'], effect: (r, k) => (r.gold += r.potions * g.getSkillLevelFromExp(k.alchemy), r.potions = 0) },
         'Read Books': {},
         'Gather Team': { affected: ['gold'], effect: (r) => (r.team = (r.team || 0) + 1, r.gold -= r.team * 100) },
@@ -601,7 +614,13 @@ const Koviko = {
         }},
         'Face Judgement': { effect: (r) => r.town += 1 },
 
-        // Town 5
+        // Valhalla
+        'Guided Tour': { affected: ['gold'], canStart: (input) => (input.gold >= 10), effect: (r) => (r.gold -= 10) },
+        'Canvass': {},
+        'Sell Artifact': { affected: ['artifacts', 'gold'], canStart: (input) => (input.artifacts >= 1), effect: (r) => (r.artifacts -= 1, r.gold += 50) },
+        'Charm School': {},
+        'Oracle': {},
+        'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Fall From Grace': {},
 
         // Loops without Max
@@ -700,6 +719,7 @@ const Koviko = {
        */
       const state = {
         resources: { mana: 250, town: 0 },
+        maxResources: { mana: 250, town: 0},
         stats: Koviko.globals.statList.reduce((stats, name) => (stats[name] = 0, stats), {}),
         skills: Object.entries(Koviko.globals.skills).reduce((skills, x) => (skills[x[0].toLowerCase()] = x[1].exp, skills), {}),
         progress: {},
@@ -745,9 +765,12 @@ const Koviko = {
 
       // Initialize all affected resources
       affected.forEach(x => state.resources[x] || (state.resources[x] = 0));
+      affected.forEach(x => state.maxResources[x] || (state.maxResources[x] = 0));
 
       // Initialize the display element for the total amount of mana used
       container && (this.totalDisplay.innerHTML = '');
+
+      let wstyle = document.getElementById('wstyle');
 
       // Run through the action list and update the view for each action
       actions.forEach((listedAction, i) => {
@@ -778,7 +801,9 @@ const Koviko = {
           }
 
           // Predict each loop in sequence
-          for (let loop = 0; loop < listedAction.loops; loop++) {
+          let repeatLoop = options.repeatLastAction && i == actions.length - 1;
+          let loop = 0;
+          for (loop = 0; repeatLoop ? isValid : loop < listedAction.loops; loop++) {
             let canStart = typeof(prediction.canStart) === "function" ? prediction.canStart(state.resources) : prediction.canStart;
             if (!canStart) { isValid = false; }
             if ( !canStart || listedAction.disabled ) { break; }
@@ -842,10 +867,36 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
-            div.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
+            let e = div.removeChild(div.lastElementChild);
+
+            if ( repeatLoop ) {
+              let t = div.lastElementChild;
+              t.innerHTML += \` <div><ul class="koviko"><li style='color:#bbbbbb;'>\${loop}</li></ul></div>\`
+            }
+
+            let n = document.createElement('div');
+            n.style = 'display:flex;'
+            n.innerHTML = e.outerHTML;
+            n.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
+            div.appendChild(n)
           }
+          affected.forEach(x => state.maxResources[x] = Math.sign(state.maxResources[x] + state.resources[x]) * Math.max(Math.abs(state.resources[x]), Math.abs(state.maxResources[x])));
         }
       });
+
+      if (wstyle) {
+        var style = affected.map(name => {
+          if ( state.maxResources[name] != 0 ) {
+            let s = '' + state.maxResources[name]
+            let l = s.length * 6
+            return \`ul.koviko .\${name}{width:\${l}px;}\`;
+          }
+          else return '';
+        }).join('');
+        for (; wstyle.lastChild; wstyle.removeChild(wstyle.lastChild));
+        wstyle.appendChild(document.createTextNode(style));
+      }
+
 
       // Update the display for the total amount of mana used by the action list
       totalTicks /= 50;
@@ -966,7 +1017,7 @@ const Koviko = {
 
       var Affec = affected.map(name => {
         if ( resources[name] != 0 ) return \`<li class=\${name}>\${resources[name]}</li>\`;
-        else return "";
+        else return \`<li class=\${name}></li>\`;
       }).join('');
       return \`<ul class='koviko \${isValid}'>\` + Affec + \`</ul><div class='koviko showthis'><table>\${tooltip || '<b>N/A</b>'}</table></div>\`;
     };
