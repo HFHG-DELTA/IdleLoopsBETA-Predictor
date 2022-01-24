@@ -831,7 +831,9 @@ const Koviko = {
           }
 
           // Predict each loop in sequence
-          for (let loop = 0; loop < listedAction.loops; loop++) {
+          let repeatLoop = options.repeatLastAction && i == actions.length - 1;
+          let loop = 0;
+          for (loop = 0; repeatLoop ? isValid : loop < listedAction.loops; loop++) {
             let canStart = typeof(prediction.canStart) === "function" ? prediction.canStart(state.resources) : prediction.canStart;
             if (!canStart) { isValid = false; }
             if ( !canStart || listedAction.disabled ) { break; }
@@ -895,6 +897,11 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
+            if ( repeatLoop ) {
+              let t = div.children[0];
+              t.innerHTML += \` <div><ul class="koviko"><li style='color:#bbbbbb;'>\${loop}</li></ul></div>\`
+            }
+
             let text = document.createElement("div");
             text.innerHTML = this.template(listedAction.name, affected, state.resources, snapshots, isValid);
             text.setAttribute("style", "margin-right: auto;");
