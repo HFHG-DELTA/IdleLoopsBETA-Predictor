@@ -716,7 +716,7 @@ const Koviko = {
           },
           effect: { loop: (r) => r.mind++ },
         }},
-      };
+      
       'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
           canStart: (input) => (input.gold >= 500, input.favors >=10),
           effect: (input) => (input.gold -=500, input.favors -=10),
