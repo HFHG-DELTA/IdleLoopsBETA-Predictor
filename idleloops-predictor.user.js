@@ -521,7 +521,7 @@ const Koviko = {
           r.temp2 = (r.temp2 || 0) + 1;
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
-        'Buy Glasses': { affected: ['gold'], effect: (r) => (r.gold -= 10, r.glasses = true) },
+        'Buy Glasses': { effect: (r) => (r.gold -= 10, r.glasses = true) },
         'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
@@ -617,7 +617,9 @@ const Koviko = {
         'Face Judgement': { effect: (r) => r.town += 1 },
 
         // Town 5
-        'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
+        'Fall From Grace': {},
+	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
+	        'Fall From Grace': {},
         'Guided Tour': { affected: ['gold'], effect: (r) => (r.gold -= 10) },
         'Seek Citizenship': {},
         'Canvass': {},
@@ -653,7 +655,6 @@ const Koviko = {
         'Build Housing': {},
         'Restoration': { effect: (r, k) => k.restoration += 100 },
         'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
-        'Fall From Grace': {},
 
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
@@ -728,14 +729,14 @@ const Koviko = {
           },
           effect: { loop: (r) => r.mind++ },
         }},
-        'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
+      'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
           canStart: (input) => (input.gold >= 500, input.favors >=10),
           effect: (input) => (input.gold -=500, input.favors -=10),
           loop: {
             cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
             tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
           effect: { segment: (r) => (r.wizrank++) }
-        }},
+      }},
       };
 
       /**
