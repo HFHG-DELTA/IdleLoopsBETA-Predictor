@@ -717,6 +717,14 @@ const Koviko = {
           effect: { loop: (r) => r.mind++ },
         }},
       };
+      'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
+          canStart: (input) => (input.gold >= 500, input.favors >=10),
+          effect: (input) => (input.gold -=500, input.favors -=10),
+          loop: {
+            cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
+            tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
+          effect: { segment: (r) => (r.wizrank++) }
+      }},
 
       /**
        * Prediction collection
