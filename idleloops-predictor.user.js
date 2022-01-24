@@ -1,3 +1,4 @@
+
 // ==UserScript==
 // @name         IdleLoops Predictor BETA
 // @namespace    https://github.com/HFHG-DELTA
@@ -320,7 +321,7 @@ const Koviko = {
       this.initStyle();
       this.initElements()
       this.initPredictions();
-	  if(typeof GM_getValue !== "undefined" && GM_getValue('timePercision') !== undefined) {
+      if(typeof GM_getValue !== "undefined" && GM_getValue('timePercision') !== undefined) {
           var loadedVal = GM_getValue('timePercision');
           \$('#updateTimePercision').val(loadedVal);
       }
@@ -430,8 +431,8 @@ const Koviko = {
         parent.appendChild(this.totalDisplay);
       }
 
-	  //Adds more to the Options panel
-	  \$('#menu div:nth-child(4) div:first').append("<div id='preditorSettings'><br /><b>Predictor Settings</b><br />Degrees of percision on Time<input id='updateTimePercision' type='number' value='1' min='0' max='10' style='width: 50px;'></div>")
+      //Adds more to the Options panel
+      \$('#menu div:nth-child(4) div:first').append("<div id='preditorSettings'><br /><b>Predictor Settings</b><br />Degrees of percision on Time<input id='updateTimePercision' type='number' value='1' min='0' max='10' style='width: 50px;'></div>")
       \$('#updateTimePercision').focusout(function() {
           if(\$(this).val() > 10) {
               \$(this).val(10);
@@ -508,7 +509,10 @@ const Koviko = {
           r.temp2 = (r.temp2 || 0) + 1;
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
-        'Buy Glasses': { affected: ['gold'],  effect: (r) => (r.gold -= 10, r.glasses = true) },
+        'Buy Glasses': { effect: (r) => (r.gold -= 10, r.glasses = true) },
+
+
+
         'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
@@ -603,10 +607,9 @@ const Koviko = {
         }},
         'Face Judgement': { effect: (r) => r.town += 1 },
 
-        // Town 5
+        // Town 5  Valhalla
+        'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Fall From Grace': {},
-	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
-	        'Fall From Grace': {},
         'Guided Tour': { affected: ['gold'], effect: (r) => (r.gold -= 10) },
         'Seek Citizenship': {},
         'Canvass': {},
@@ -643,6 +646,11 @@ const Koviko = {
         'Restoration': { effect: (r, k) => k.restoration += 100 },
         'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
 
+         // Town 5  Adeptsville
+         'The Spire': {},
+
+
+
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
           cost: (p, a) => segment => g.fibonacci(2 + Math.floor((p.completed + segment) / a.segments + .0000001)) * 5000,
@@ -669,12 +677,27 @@ const Koviko = {
           tick: (p, a, s, k, r) => offset => (h.getSelfCombat(r, k) * Math.sqrt(1 + p.total/100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]])/100)),
           effect: { loop: (r, k) => (r.blood++, k.combat += 1000) }
         }},
-	'Tidy Up': { affected: ['gold'], loop: {
+
+
+        ////////////////////////////////
+        'Tidy Up': { affected: ['gold'], loop: {
           cost: (p, a) => segment => g.fibonacci(Math.floor((p.completed + segment) - p.completed / 3 + .0000001)) * 1000000,
           tick: (p, a, s, k) => offset => g.getSkillLevelFromExp(k.practical) * Math.sqrt(1 + p.total / 100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100),
           effect: { loop: (r) => (r.gold += 50)}
         }},
 
+        'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
+          canStart: (input) => (input.gold >= 500, input.favors >=10),
+          effect: (input) => (input.gold -=500, input.favors -=10),
+          loop: {
+            cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
+            tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
+          effect: { segment: (r) => (r.wizrank++) }
+        }},
+
+
+
+        ///////////////////////////////
         // Loops with Max
         'Small Dungeon': { affected: ['soul'], canStart: (input) => input.rep >= 2, loop: {
           max: (a) => g.dungeons[a.dungeonNum].length,
@@ -716,15 +739,6 @@ const Koviko = {
           },
           effect: { loop: (r) => r.mind++ },
         }},
-      
-      'Wizard College': { affected: ['gold', 'favors', 'wizrank'],
-          canStart: (input) => (input.gold >= 500, input.favors >=10),
-          effect: (input) => (input.gold -=500, input.favors -=10),
-          loop: {
-            cost: (p) => segment => g.precision3(Math.pow(1.2, p.completed + segment)) * 5e6,
-            tick: (p, a, s, k) => offset =>  getSkillLevel("Magic") + getSkillLevel("Practical") + getSkillLevel("Dark") + getSkillLevel("Chronomancy") + getSkillLevel("Pyromancy") + getSkillLevel("Chronomancy") + getSkillLevel("Restoration") + getSkillLevel("Spatiomancy")  * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000),
-          effect: { segment: (r) => (r.wizrank++) }
-       }},
       };
 
       /**
@@ -793,14 +807,16 @@ const Koviko = {
       /**
        *This is used to see when the loop becomes invalid due to mana cost
        */
-	  //This is the percision of the Time field
-	  let percisionForTime = \$('#updateTimePercision').val();
+      //This is the percision of the Time field
+      let percisionForTime = \$('#updateTimePercision').val();
 
       // Initialize all affected resources
       affected.forEach(x => state.resources[x] || (state.resources[x] = 0));
 
       // Initialize the display element for the total amount of mana used
       container && (this.totalDisplay.innerHTML = '');
+
+      for (const [_, prediction] of Object.entries(this.predictions)) { prediction.loopsCompleted = 0; }
 
       // Run through the action list and update the view for each action
       actions.forEach((listedAction, i) => {
@@ -831,7 +847,7 @@ const Koviko = {
           }
 
           // Predict each loop in sequence
-          let repeatLoop = options.repeatLastAction && i == actions.length - 1;
+                    let repeatLoop = options.repeatLastAction && i == actions.length - 1;
           let loop = 0;
           for (loop = 0; repeatLoop ? isValid : loop < listedAction.loops; loop++) {
             let canStart = typeof(prediction.canStart) === "function" ? prediction.canStart(state.resources) : prediction.canStart;
@@ -884,6 +900,7 @@ const Koviko = {
                 prediction.loop.effect.end(state.resources, state.skills);
               }
             }
+            prediction.loopsCompleted += 1;
           }
 
           if(prediction.name in state.progress)
@@ -897,7 +914,7 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
-            if ( repeatLoop ) {
+                        if ( repeatLoop ) {
               let t = div.children[0];
               t.innerHTML += \` <div><ul class="koviko"><li style='color:#bbbbbb;'>\${loop}</li></ul></div>\`
             }
@@ -911,6 +928,7 @@ const Koviko = {
       });
 
       // Update the display for the total amount of mana used by the action list
+      totalTicks = totalTicks/gameSpeed
       totalTicks /= 50;
       var h = Math.floor(totalTicks / 3600);
       var m = Math.floor(totalTicks % 3600 / 60);
@@ -992,6 +1010,15 @@ const Koviko = {
               break;
             case "practical":
               tooltip += 'PRACT';
+              break;
+            case "mercantilism":
+              tooltip += 'MERC';
+              break;
+            case "restoration":
+              tooltip += 'RESTO';
+              break;
+            case "spatiomancy":
+              tooltip += 'SPATIO';
               break;
             default:
               tooltip += i.toUpperCase();
