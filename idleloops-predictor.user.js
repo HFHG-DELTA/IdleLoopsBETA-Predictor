@@ -911,7 +911,13 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
-            div.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
+            let e = div.removeChild(div.lastElementChild);
+
+            let n = document.createElement('div');
+            n.style = 'display:flex;'
+            n.innerHTML = e.outerHTML;
+            n.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
+            div.appendChild(n)
           }
           affected.forEach(x => state.maxResources[x] = Math.sign(state.maxResources[x] + state.resources[x]) * Math.max(Math.abs(state.resources[x]), Math.abs(state.maxResources[x])));
         }
