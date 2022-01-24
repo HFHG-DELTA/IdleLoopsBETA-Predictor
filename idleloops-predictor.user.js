@@ -509,7 +509,7 @@ const Koviko = {
           r.gold += r.temp2 <= towns[0].goodLocks ? g.Action.PickLocks.goldCost() : 0;
         }},
         'Buy Glasses': { effect: (r) => (r.gold -= 10, r.glasses = true) },
-        'Buy Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Mana Z1': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Meet People': {},
         'Train Strength': {},
         'Short Quest': { affected: ['gold'], effect: (r) => {
@@ -566,7 +566,7 @@ const Koviko = {
           r.rep--;
         }},
         'Get Drunk': { affected: ['rep'], canStart: (input) => (input.rep >= -3), effect: (r) => r.rep-- },
-        'Purchase Mana': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+        'Buy Mana Z3': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
         'Sell Potions': { affected: ['gold', 'potions'], effect: (r, k) => (r.gold += r.potions * g.getSkillLevelFromExp(k.alchemy), r.potions = 0) },
         'Read Books': {},
         'Gather Team': { affected: ['gold'], effect: (r) => (r.team = (r.team || 0) + 1, r.gold -= r.team * 100) },
@@ -605,6 +605,7 @@ const Koviko = {
 
         // Town 5
         'Fall From Grace': {},
+	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
 
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
