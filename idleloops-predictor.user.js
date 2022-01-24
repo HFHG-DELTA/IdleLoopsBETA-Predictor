@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         IdleLoops Predictor Vivianne
-// @namespace    https://github.com/Eredian/
-// @version      1.7.9
-// @description  Predicts the amount of resources spent and gained by each action in the action list. Valid as of IdleLoops v.85/Omsi6.
+// @name         IdleLoops Predictor BETA
+// @namespace    https://github.com/HFHG-DELTA
+// @version      1.1
+// @description  Predicts the amount of resources spent and gained by each action in the action list. Valid as of IdleLoops v.94/Omsi6. Approaching valid as of BETA 01-22-2022
 // @author       Koviko <koviko.net@gmail.com>
 // @match        https://omsi6.github.io/loops/
 // @grant        GM_getValue
