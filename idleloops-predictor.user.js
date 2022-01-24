@@ -687,8 +687,15 @@ const Koviko = {
 	        g.getSkillLevelFromExp(k.pyromancy) + g.getSkillLevelFromExp(k.restoration) + g.getSkillLevelFromExp(k.spatiomancy)) * 
 	      (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]]) / 100) * Math.sqrt(1 + p.total / 1000)
 	    ),
-          effect: { segment: (r) => (r.wizrank++) }
-        }},
+            effect: { 
+	      segment: (r) => (r.wizrank++),
+	      end: (r, k, ps) => (
+	        ps['Restoration'].action.manaCost = () => 30000 / precision3(1 + r.wizrank / 20 + Math.pow(r.wizrank, 2) / 300),
+		ps['Restoration'].action.manaCost = () => 30000 / precision3(1 + r.wizrank / 20 + Math.pow(r.wizrank, 2) / 300)
+	      )
+            }
+          }
+	},
         'Hunt Trolls': { affected: ['blood'], loop: {
           cost: (p, a) => segment => g.precision3(Math.pow(2, Math.floor((p.completed + segment) / a.segments+.0000001)) * 1e6),
           tick: (p, a, s, k, r) => offset => (h.getSelfCombat(r, k) * Math.sqrt(1 + p.total/100) * (1 + g.getLevelFromExp(s[a.loopStats[(p.completed + offset) % a.loopStats.length]])/100)),
@@ -873,8 +880,6 @@ const Koviko = {
             // Calculate the total amount of mana used in the prediction and add it to the total
             total += currentMana - state.resources.mana;
 
-
-
             // Calculate time spent
             let temp = (currentMana - state.resources.mana) / Math.pow(1 + getSkillLevel("Chronomancy") / 60, 0.25);
             if ( state.resources.town === 0 && getBuffLevel("Ritual") > 0) {
@@ -899,7 +904,7 @@ const Koviko = {
             }
             if (prediction.loop) {
               if (prediction.loop.effect.end) {
-                prediction.loop.effect.end(state.resources, state.skills);
+                prediction.loop.effect.end(state.resources, state.skills, this.predictions);
               }
             }
           }
