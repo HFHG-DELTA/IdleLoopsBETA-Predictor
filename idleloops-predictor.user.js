@@ -895,7 +895,10 @@ const Koviko = {
           // Update the view
           if (div) {
             div.className += ' showthat';
-            div.innerHTML =  this.template(listedAction.name, affected, state.resources, snapshots, isValid) + div.innerHTML
+            let text = document.createElement("div");
+            text.innerHTML = this.template(listedAction.name, affected, state.resources, snapshots, isValid);
+            text.setAttribute("style", "margin-right: auto;");
+            div.insertBefore(text, div.children[1]);
           }
         }
       });
