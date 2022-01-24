@@ -606,6 +606,42 @@ const Koviko = {
         // Town 5
         'Fall From Grace': {},
 	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * 50, r.gold = 0) },
+	        'Fall From Grace': {},
+        'Guided Tour': { affected: ['gold'], effect: (r) => (r.gold -= 10) },
+        'Seek Citizenship': {},
+        'Canvass': {},
+        'Donate': { affected: ['gold', 'rep'], canStart: (input) => (input.gold >= 20), effect: (r) => {
+          r.gold -= 20;
+          r.rep += 1;
+        }},
+        'Accept Donations': {affected: ['gold', 'rep'], canStart: (input) => (input.rep >= 1), effect: (r) => {
+          r.rep -= 1;
+          r.gold += 20;
+        }},
+        'Sell Artifact': { affected: ['artifacts','gold'], canStart: (input) => (input.artifacts >= 1), effect: (r) => {
+         r.artifacts -= 1;
+         r.gold += 50;
+        }},
+        'Gift Artifact': { affected: ['artifacts','favors'], canStart: (input) => (input.artifacts >= 1), effect: (r) => {
+         r.artifacts -= 1;
+         r.favors += 1;
+        }},
+        'Mercantilism': { effect: (r, k) => k.mercantilism += 100 },
+        'Charm School': {},
+        'Oracle': {},
+        'Winged Steed': { affected: ['gold','favors'], canStart: (input) => (input.favors >= 10, input.gold >= 100), effect: (r) => {
+         r.favors -= 10;
+         r.gold -= 100;
+        }},
+        'Great Feast': {},
+        'Collect Taxes': {},
+        'Acquire Permit': {},
+        'Purchase Land': { affected: ['gold'], canStart: (input) => (input.gold >= 50), effect: (r) => {
+         r.gold -= 50;}
+        },
+        'Build Housing': {},
+        'Restoration': { effect: (r, k) => k.restoration += 100 },
+        'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
 
         // Loops without Max
         'Heal The Sick': { affected: ['rep'], canStart: (input) => (input.rep >= 1), loop: {
