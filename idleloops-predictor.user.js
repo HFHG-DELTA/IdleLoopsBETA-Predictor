@@ -645,7 +645,9 @@ const Koviko = {
         'Build Housing': {},
         'Restoration': { effect: (r, k) => k.restoration += 100 },
         'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
-
+        'Enchant Armor': {},
+        'Open Rift':{},
+	
          // Town 5  Adeptsville
          'The Spire': {},
 
