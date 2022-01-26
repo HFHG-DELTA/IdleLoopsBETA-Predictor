@@ -645,7 +645,10 @@ const Koviko = {
         'Build Housing': {},
         'Restoration': { effect: (r, k) => k.restoration += 100 },
         'Spatiomancy': { effect: (r, k) => k.spatiomancy += 100 },
-        'Enchant Armor': {},
+        'Enchant Armor': { affected: ['armor', 'favors'], canStart: (input) => (input.armor >= 1, input.favors >= 1), effect: (r) => {
+         r.armor -= 1,
+         r.favors -= 1}
+        },
         'Open Rift':{},
 	
          // Town 5  Adeptsville
