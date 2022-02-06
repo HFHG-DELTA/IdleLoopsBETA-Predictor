@@ -381,7 +381,7 @@ const Koviko = {
       ul.koviko .rep{color:#b06f37;width:0px;}
       ul.koviko .soul{color:#9d67cd;width:0px;}
       ul.koviko .herbs{color:#4caf50;width:0px;}
-      ul.koviko .hide{color:#917a50}
+      ul.koviko .hide{color:#917a50;width:0px;}
       ul.koviko .potions{color:#00b2ee;width:0px;}
       ul.koviko .lpoitons{color:#436ef7;width:0px;}
       ul.koviko .blood{color:#8b0000;width:0px;}
@@ -392,7 +392,7 @@ const Koviko = {
       ul.koviko .mind{color:#006400;width:0px;}
       ul.koviko .favors{color:#6392fe;width:0px;}
       ul.koviko .wizrank{color:#7303bb;width:0px;}
-      ul.koviko .armor{color:#5B4a2a}
+      ul.koviko .armor{color:#5B4a2a;width:0px;}
       .actionOptions .showthis {width:max-content;bottom:100%;max-width:400px;margin-bottom:5px;}
       .travelContainer, .actionContainer {position:relative;}
       \`;
