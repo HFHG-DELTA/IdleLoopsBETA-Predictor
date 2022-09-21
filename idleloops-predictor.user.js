@@ -582,7 +582,7 @@ const Koviko = {
         'Get Drunk': { affected: ['rep'], canStart: (input) => (input.rep >= -3), effect: (r) => r.rep-- },
         'Buy Mana Z3': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
         'Sell Potions': { affected: ['gold', 'potions'], effect: (r, k) => (r.gold += r.potions * g.getSkillLevelFromExp(k.alchemy), r.potions = 0) },
-        'Read Books': {},
+        'Read Books': {canStart: (input) => input.glasses},
         'Gather Team': { affected: ['gold'], effect: (r) => (r.team = (r.team || 0) + 1, r.gold -= r.team * 100) },
         'Craft Armor': { affected: ['armor', 'hide'], canStart: (input) => (input.hide >= 2), effect: (r) => (r.hide -= 2, r.armor = (r.armor || 0) + 1) },
         'Apprentice': { effect: (r, k) => (r.apprentice = (r.apprentice || 0) + 30 * h.getGuildRankBonus(r.crafts || 0), k.crafting += 10 * (1 + h.getTownLevelFromExp(r.apprentice) / 100)) },
@@ -621,7 +621,7 @@ const Koviko = {
         'Fall From Grace': {},
 	'Buy Mana Z5': { affected: ['mana', 'gold'], effect: (r) => (r.mana += r.gold * Math.floor(50 * Math.pow(1 + getSkillLevel("Mercantilism") / 60 , 0.25)), r.gold = 0) },
 	        'Fall From Grace': {},
-        'Guided Tour': { affected: ['gold'], effect: (r) => (r.gold -= 10) },
+        'Guided Tour': { affected: ['gold'], canStart: (input) => (input.gold >= 10), effect: (r) => (r.gold -= 10) },
         'Seek Citizenship': {},
         'Canvass': {},
         'Donate': { affected: ['gold', 'rep'], canStart: (input) => (input.gold >= 20), effect: (r) => {
