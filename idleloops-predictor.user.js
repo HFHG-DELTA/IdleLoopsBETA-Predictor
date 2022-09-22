@@ -629,9 +629,9 @@ const Koviko = {
           r.rep += 1;
         }},
         'Accept Donations': {affected: ['gold', 'rep'], canStart: (input) => (input.rep >= 1), effect: (r) => {
+          r.rep -= 1;
           r.temp12 = (r.temp12 || 0) + 1;
           if (r.temp12 <= towns[4].goodDonations) {
-            r.rep -= 1;
             r.gold += 20;
           }
         }},
