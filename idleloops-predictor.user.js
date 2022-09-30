@@ -463,7 +463,7 @@ const Koviko = {
       let css = \`
       .nextActionContainer { width: auto!important; padding:1px 4px; grid-template: "a b . c" / auto auto 1fr auto }
       .nextActionContainer[style~='flex;'] {display: grid!important;}
-      .nextActionContainer > div:first-child { width: 70px; }
+      .nextActionContainer > div:first-child { width: 100px; }
       .nextActionContainer > div:nth-child(2) { width: 120px; text-align: right; grid-area: c }
       .koviko.valid, .koviko.invalid { grid-area: b;pointer-events:auto }
       #nextActionsList{height:100%!important; overflow-y:scroll;}
@@ -475,7 +475,7 @@ const Koviko = {
       span.koviko{font-weight:bold;color:#8293ff;}
       div.koviko{top:-5px;left:auto;right:100%}
       ul.koviko{list-style:none;margin:0;padding:0;pointer-events:none;display:inline-block;}
-      ul.koviko li{display:inline-block;margin: 0 2px;font-weight:bold;font-size:90%;text-align:right;}
+      ul.koviko li{display:inline-block;margin: 0px;font-weight:bold;font-size:90%;text-align:right;}
       ul.koviko.invalid li{color:#c00!important}
       ul.koviko.expired li, .expired .koviko{color:#777!important}
       ul.koviko .mana{color:#8293ff;width:0px;}
@@ -1758,18 +1758,18 @@ const Koviko = {
           if (div) {
             div.querySelector('.expired')?.remove();
             if (typeof(repeatLoop) !== 'undefined' && repeatLoop) {
-              affected.unshift('finLoops');
-              state.resources.finLoops=loop;
+              let t = div.children[0];
+              t.innerHTML += \` <div><ul class="koviko"><li style='color:#777777;'>\${loop.toLocaleString('en', {useGrouping:true})}</li></ul></div>\`
             }
             div.className += ' showthat';
             div.innerHTML += this.template(listedAction.name, affected, state.resources, snapshots, isValid);
           }
-          affected.forEach(x => state.maxLength[x] = Math.max(state.maxLength[x], ('' + state.resources[x]).length));
+          affected.forEach(x => state.maxLength[x] = Math.max(state.maxLength[x], state.resources[x] == 0 ? 0 : ('' + state.resources[x]).length));
         }
       }
 
       if (wstyle) {
-        var style = affected.map(name => \`ul.koviko .\${name}{width:\${6 * state.maxLength[name]}px;}\` ).join('');
+        var style = affected.map(name => \`ul.koviko .\${name}{width:\${7 * state.maxLength[name] + ((state.maxLength[name] > 0) ? 3 : 0)}px;}\` ).join('');
         for (; wstyle.lastChild; wstyle.removeChild(wstyle.lastChild));
         wstyle.appendChild(document.createTextNode(style));
       }
@@ -1988,7 +1988,7 @@ const Koviko = {
 
       var Affec = affected.map(name => {
         if ( resources[name] != 0 ) return ('<li class='+name+' title='+name.charAt(0).toUpperCase() + name.slice(1)+'>'+resources[name].toLocaleString('en', {useGrouping:true})+'</li>');
-        else return "";
+        else return \`<li class=\${name}></li>\`;
       }).join('');
       return \`<ul class='koviko \${isValid}'>\` + Affec + \`</ul><div class='koviko showthis'><table>\${tooltip || '<b>N/A</b>'}</table></div>\`;
     };
