@@ -493,7 +493,7 @@ const Koviko = {
       ul.koviko .ritual{color:#ff1493;width:0px;}
       ul.koviko .artifacts{color:#ffd700;width:0px;}
       ul.koviko .mind{color:#006400;width:0px;}
-      ul.koviko .favors{color:#6392fe;width:0px;}
+      ul.koviko .favor{color:#6392fe;width:0px;}
       ul.koviko .wizard{color:#7303bb;width:0px;}
       ul.koviko .armor{color:#5B4a2a;width:0px;}
       ul.koviko .stone{color:#ff0000;width:0px;}
@@ -1120,7 +1120,7 @@ const Koviko = {
           r.gold += 50;
           r.artifacts -= 1;
         }},
-        'Gift Artifact':{ affected:['artifacts'],
+        'Gift Artifact':{ affected:['artifacts', 'favor'],
           canStart:(input) => {
           return (input.artifacts >= 1);
         },
